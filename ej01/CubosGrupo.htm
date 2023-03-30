@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Grupo de cubos</title>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module">
+    import * as THREE from 'https://sebastiann16.github.io/CompG/three.module.js';
+    import { OrbitControls } from 'https://sebastiann16.github.io/CompG/OrbitControls.js';
+    var WIDTH = window.innerWidth;
+    var HEIGHT = window.innerHeight;
+   
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(0xDDDDDD, 1);
+    document.body.appendChild(renderer.domElement);
+
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(20, WIDTH / HEIGHT);
+    camera.position.z = 50;
+    camera.position.y =30;
+    camera.position.x = 2;
+    scene.add(camera);
+    const light = new THREE.AmbientLight(0x404040, 5);
+    scene.add(light);
+
+
+    const color = [0x660B0B, 0x282863, 0x2c5a57, 0x4F9543, 0x2A1A4B, 0x84B342, 0xCF9232, 0xC75B29, 0xAD3023];
+
+    function cubo(base, altura, ancho, col) {
+      const geometry = new THREE.BoxGeometry(base, altura, ancho);
+      const material = new THREE.MeshNormalMaterial({ color: col });
+      return new THREE.Mesh(geometry, material);
+    }
+
+    var ArCub = [];
+    var n = color.length;
+    var lado=3.5;
+    for (var i = 0; i < 4; i++) {
+      var alto = i+1;
+      ArCub[i] = cubo(lado/i, alto*2/i, lado/i, color[i]);
+      ArCub[i].position.x = 1;
+      ArCub[i].position.y = alto+i;
+    }
+
+    const group = new THREE.Group();
+    for (i = 0; i < 4; i++) {
+      group.add(ArCub[i]);
+    }
+
+    group.rotation.y = Math.PI / 4;
+
+
+    
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera)
+    }
+    animate();
+
+    const axesHelper = new THREE.AxesHelper( 10 );
+    scene.add( axesHelper );
+    scene.add(group);
+  </script>
+</body>
+
+</html>
